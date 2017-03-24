@@ -15,6 +15,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import facade.ActorFacade;
+import facade.FilmFacade;
 import jdk.nashorn.internal.objects.annotations.Getter;
 import model.Actor;
 import model.data.ActorData;
@@ -27,6 +28,9 @@ public class ActorService {
 	
 	@EJB 
 	ActorFacade actorFacadeEJB;
+
+	@EJB
+	FilmFacade filmFacadeEJB;
 	
 	Logger logger = Logger.getLogger(ActorService.class.getName());
 	
@@ -87,6 +91,32 @@ public class ActorService {
         }
 
         return films;
+    }
+
+    @POST
+    @Path("{actor_id}/films/{film_id}")
+    @Consumes({"application/xml", "application/json"})
+    public void addActor(@PathParam("actor_id") Integer actor_id, @PathParam("film_id") Integer film_id) {
+
+        Actor actor = actorFacadeEJB.find(actor_id);
+
+        List<Film> actorFilms = actor.getFilms();
+        boolean notFound = true;
+        int size = actorFilms.size();
+        for(int i = 0; i < size; i++) {
+            if (actorFilms.get(i).getFilmId() == film_id) {
+                notFound = false;
+                break;
+            }
+        }
+
+        if(notFound) {
+            Film film = filmFacadeEJB.find(film_id);
+            film.addActor(actor);
+            filmFacadeEJB.edit(film);
+        }
+
+
     }
 	
 

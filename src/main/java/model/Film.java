@@ -182,6 +182,10 @@ public class Film implements Serializable {
         this.actors = actors;
     }
 
+    public void addActor(Actor actor) {
+        this.actors.add(actor);
+    }
+
     public FilmData makeRedeable() {
 
         FilmData f = new FilmData();

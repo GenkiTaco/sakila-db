@@ -4,6 +4,7 @@ import model.data.ActorData;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import javax.persistence.CascadeType;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class Actor implements Serializable {
 	private Timestamp lastUpdate;
 
 
-	@ManyToMany(mappedBy="actors")
+	@ManyToMany(cascade=CascadeType.ALL, mappedBy="actors")
 	private List<Film> films;
 
 

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.persistence.CascadeType;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -18,7 +19,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import ejb.ActorFacadeEJB;
 import facade.FilmFacade;
+import facade.ActorFacade;
 import jdk.nashorn.internal.objects.annotations.Getter;
 import model.Actor;
 import model.Film;
@@ -30,6 +33,9 @@ public class FilmService {
 
     @EJB
     FilmFacade filmFacadeEJB;
+
+    @EJB
+    ActorFacade actorFacadeEJB;
 
     Logger logger = Logger.getLogger(FilmService.class.getName());
 
@@ -89,6 +95,31 @@ public class FilmService {
         }
 
         return actors;
+    }
+
+    @POST
+    @Path("{film_id}/actors/{actor_id}")
+    @Consumes({"application/xml", "application/json"})
+    public void addActor(@PathParam("film_id") Integer film_id, @PathParam("actor_id") Integer actor_id) {
+
+        Film film = filmFacadeEJB.find(film_id);
+
+        List<Actor> filmActors = film.getActors();
+        boolean notFound = true;
+        int size = filmActors.size();
+        for(int i = 0; i < size; i++) {
+            if (filmActors.get(i).getActorId() == actor_id) {
+                notFound = false;
+                break;
+            }
+        }
+
+        if(notFound) {
+            Actor actor = actorFacadeEJB.find(actor_id);
+            film.addActor(actor);
+            filmFacadeEJB.edit(film);
+        }
+
 
     }
 
