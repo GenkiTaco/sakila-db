@@ -1,5 +1,7 @@
 package model;
 
+import model.data.ActorData;
+
 import java.io.Serializable;
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -28,6 +30,11 @@ public class Actor implements Serializable {
 
 	@Column(name="last_update", nullable=false)
 	private Timestamp lastUpdate;
+
+
+	@ManyToMany(mappedBy="actors")
+	private List<Film> films;
+
 
 	public Actor() {
 	}
@@ -63,5 +70,26 @@ public class Actor implements Serializable {
 	public void setLastUpdate(Timestamp lastUpdate) {
 		this.lastUpdate = lastUpdate;
 	}
+
+
+	public List<Film> getFilms() {
+		return films;
+	}
+
+	public void setFilms(List<Film> films) {
+		this.films = films;
+	}
+
+	public ActorData makeRedeable() {
+
+	    ActorData ad = new ActorData();
+
+	    ad.setActorId(this.getActorId());
+	    ad.setFirstName(this.getFirstName());
+	    ad.setLastName(this.getLastName());
+	    ad.setLastUpdate(this.getLastUpdate());
+
+	    return ad;
+    }
 
 }
