@@ -118,6 +118,10 @@ public class FilmService {
             Actor actor = actorFacadeEJB.find(actor_id);
             film.addActor(actor);
             filmFacadeEJB.edit(film);
+
+            actor.addFilm(film);
+
+            actorFacadeEJB.edit(actor);
         }
 
 
